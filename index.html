@@ -10,7 +10,7 @@
   <script>
     async function enviar() {
       const prompt = document.getElementById("prompt").value;
-      const res = await fetch("https://3dd0a099ee3e.ngrok-free.app/generate", {
+      const res = await fetch("https://01fccf08b020.ngrok-free.app/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: prompt })
@@ -21,4 +21,3 @@
   </script>
 </body>
 </html>
-
