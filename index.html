@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=2" />
-  <title>GalaxeAI Chat beta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GalaxeAI Chat</title>
   <style>
     * {
       box-sizing: border-box;
@@ -17,6 +17,7 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
+      overflow: hidden;
     }
 
     header {
@@ -27,15 +28,17 @@
       font-weight: bold;
       border-bottom: 1px solid #30363d;
       color: #58a6ff;
+      flex-shrink: 0;
     }
 
     #chat {
-      flex: 1;
+      flex: 1 1 auto;
       padding: 20px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      max-height: calc(100vh - 70px - 60px); /* input + header */
     }
 
     .bubble {
@@ -63,10 +66,16 @@
     }
 
     #input-container {
+      height: 70px;
       display: flex;
       padding: 10px;
       background-color: #161b22;
       border-top: 1px solid #30363d;
+      box-sizing: border-box;
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+      flex-shrink: 0;
     }
 
     #mensaje {
@@ -100,6 +109,7 @@
     @media (max-width: 600px) {
       #chat {
         padding: 10px;
+        max-height: calc(100vh - 70px - 50px);
       }
 
       .bubble {
@@ -109,6 +119,7 @@
       }
 
       #input-container {
+        height: 60px;
         padding: 8px;
       }
 
@@ -154,7 +165,7 @@
       for (let i = 0; i < texto.length; i++) {
         burbuja.textContent += texto[i];
         chatDiv.scrollTop = chatDiv.scrollHeight;
-        await new Promise(r => setTimeout(r, 12)); // velocidad de escritura
+        await new Promise(r => setTimeout(r, 12));
       }
     }
 
@@ -162,12 +173,10 @@
       const mensaje = mensajeInput.value.trim();
       if (!mensaje) return;
 
-      // Añadir mensaje del usuario
       messages.push({ role: "user", content: mensaje });
       addBubble(mensaje, "user");
       mensajeInput.value = "";
 
-      // Añadir burbuja en blanco para la IA
       const aiBubble = addBubble("", "assistant");
 
       try {
@@ -190,13 +199,9 @@
       }
     }
 
-    // Enviar con Enter
     mensajeInput.addEventListener("keydown", function(e) {
       if (e.key === "Enter") enviar();
     });
   </script>
 </body>
 </html>
-
-
-
