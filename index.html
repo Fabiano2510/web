@@ -1,23 +1,175 @@
 <!DOCTYPE html>
-<html>
-<head><title>Demo IA</title></head>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>GalaxeAI Chat</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background-color: #161b22;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: bold;
+      border-bottom: 1px solid #30363d;
+      color: #58a6ff;
+    }
+
+    #chat {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.5;
+      display: inline-block;
+    }
+
+    .user-bubble {
+      align-self: flex-end;
+      background-color: #238636;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .ai-bubble {
+      align-self: flex-start;
+      background-color: #21262d;
+      border: 1px solid #30363d;
+      border-bottom-left-radius: 4px;
+    }
+
+    #input-container {
+      display: flex;
+      padding: 10px;
+      background-color: #161b22;
+      border-top: 1px solid #30363d;
+    }
+
+    #mensaje {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 1px solid #30363d;
+      background-color: #0d1117;
+      color: white;
+      outline: none;
+    }
+
+    button {
+      margin-left: 10px;
+      padding: 12px 16px;
+      font-size: 16px;
+      background-color: #238636;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2ea043;
+    }
+
+    @media (max-width: 600px) {
+      .bubble {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
 <body>
-  <h2>Mini IA</h2>
-  <input id="prompt" placeholder="Escribe algo..." />
-  <button onclick="enviar()">Enviar</button>
-  <p><strong>Respuesta:</strong> <span id="respuesta"></span></p>
+  <header>GalaxeAI Chat</header>
+
+  <div id="chat"></div>
+
+  <div id="input-container">
+    <input type="text" id="mensaje" placeholder="Escribe tu mensaje..." />
+    <button onclick="enviar()">Enviar</button>
+  </div>
 
   <script>
-    async function enviar() {
-      const prompt = document.getElementById("prompt").value;
-      const res = await fetch("https://01fccf08b020.ngrok-free.app/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: prompt })
-      });
-      const data = await res.json();
-      document.getElementById("respuesta").textContent = data.response;
+    const chatDiv = document.getElementById("chat");
+    const mensajeInput = document.getElementById("mensaje");
+    let messages = [];
+
+    function addBubble(content, role) {
+      const bubble = document.createElement("div");
+      bubble.className = `bubble ${role === "user" ? "user-bubble" : "ai-bubble"}`;
+      bubble.textContent = content;
+      chatDiv.appendChild(bubble);
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+      return bubble;
     }
+
+    async function escribirGradualmente(texto, burbuja) {
+      burbuja.textContent = "";
+      for (let i = 0; i < texto.length; i++) {
+        burbuja.textContent += texto[i];
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+        await new Promise(r => setTimeout(r, 12)); // velocidad de escritura
+      }
+    }
+
+    async function enviar() {
+      const mensaje = mensajeInput.value.trim();
+      if (!mensaje) return;
+
+      // Añadir mensaje del usuario
+      messages.push({ role: "user", content: mensaje });
+      addBubble(mensaje, "user");
+      mensajeInput.value = "";
+
+      // Añadir burbuja en blanco para la IA
+      const aiBubble = addBubble("", "assistant");
+
+      try {
+        const response = await fetch("http://localhost:8000/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages })
+        });
+
+        if (!response.ok) throw new Error("Error al conectar con el servidor");
+
+        const data = await response.json();
+        const respuesta = data.response;
+
+        messages.push({ role: "assistant", content: respuesta });
+
+        await escribirGradualmente(respuesta, aiBubble);
+      } catch (error) {
+        aiBubble.textContent = "⚠️ Error: " + error.message;
+      }
+    }
+
+    // Enviar con Enter
+    mensajeInput.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") enviar();
+    });
   </script>
 </body>
 </html>
