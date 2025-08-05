@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GalaxeAI Chat</title>
   <style>
     * {
@@ -88,15 +89,38 @@
       border: none;
       border-radius: 12px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
       background-color: #2ea043;
     }
 
+    /* Ajustes para móviles */
     @media (max-width: 600px) {
+      #chat {
+        padding: 10px;
+      }
+
       .bubble {
         max-width: 100%;
+        font-size: 14px;
+        padding: 10px 14px;
+      }
+
+      #input-container {
+        padding: 8px;
+      }
+
+      #mensaje {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      button {
+        padding: 10px 14px;
+        font-size: 14px;
+        margin-left: 6px;
       }
     }
   </style>
