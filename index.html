@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GalaxeAI Chat</title>
   <link rel="icon" type="image/x-icon" href="icono.ico" />
   <style>
@@ -44,11 +45,12 @@
 
     .bubble {
       max-width: 80%;
-      padding: 10px 14px;
+      padding: 12px 16px;
       border-radius: 16px;
       line-height: 1.5;
       white-space: pre-wrap;
       word-wrap: break-word;
+      font-size: 16px;
     }
 
     .user-bubble {
@@ -72,7 +74,7 @@
 
     #mensaje {
       flex: 1;
-      padding: 10px;
+      padding: 12px;
       font-size: 16px;
       background-color: #0d1117;
       color: #c9d1d9;
@@ -81,13 +83,14 @@
     }
 
     #input-area button {
-      padding: 10px 14px;
+      padding: 12px 16px;
       margin-left: 10px;
       background-color: #238636;
       border: none;
       color: white;
       border-radius: 8px;
       cursor: pointer;
+      font-size: 16px;
     }
 
     #placeholder {
@@ -101,14 +104,14 @@
     }
 
     #placeholder img {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       margin-bottom: 10px;
     }
 
     #placeholder h1 {
       margin: 0;
-      font-size: 24px;
+      font-size: 26px;
       color: #5d52fc;
     }
 
@@ -116,6 +119,43 @@
       margin-top: 4px;
       font-size: 14px;
       color: #8b949e;
+    }
+
+    /* 📱 Estilos para pantallas pequeñas */
+    @media (max-width: 600px) {
+      header {
+        font-size: 18px;
+        padding: 12px;
+      }
+
+      #chat {
+        padding: 12px;
+        gap: 8px;
+      }
+
+      .bubble {
+        font-size: 15px;
+        padding: 10px 12px;
+      }
+
+      #mensaje {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      #input-area button {
+        font-size: 14px;
+        padding: 10px 12px;
+      }
+
+      #placeholder h1 {
+        font-size: 22px;
+      }
+
+      #placeholder img {
+        width: 50px;
+        height: 50px;
+      }
     }
   </style>
 </head>
@@ -166,7 +206,6 @@
       const mensaje = mensajeInput.value.trim();
       if (!mensaje) return;
 
-      // Ocultar el placeholder si está visible
       const placeholder = document.getElementById("placeholder");
       if (placeholder) placeholder.style.display = "none";
 
